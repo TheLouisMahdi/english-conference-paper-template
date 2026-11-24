@@ -1,0 +1,50 @@
+\section{Method}
+
+\subsection{Pipeline and time boundary}
+
+A request contains one batch of equally sized records. The timer for a ready request starts when all records are available to the sender. The first stage serializes each record, and the second stage performs the receiver computation. A fixed setup cost is charged once per batch. The three contributions are assumed to execute in sequence, and the receiver reports all results at batch completion. Fig.~\ref{fig:pipeline} shows this boundary.
+
+\begin{figure}[!t]
+\centering
+\input{figures/pipeline}
+\caption{Pipeline used in the analytical example.}
+\label{fig:pipeline}
+\end{figure}
+
+Each record has 256 payload bytes. The line uses ten transmitted bits per payload byte and has a bit rate of 2.0 Mb/s. The corresponding link time is 1.28 ms per record. A receiver then spends 0.35 ms on a record. Each batch incurs 0.60 ms of fixed setup time. Table~\ref{tab:parameters} lists the model inputs with their units.
+
+\begin{table}[!t]
+\caption{Illustrative Model Parameters}
+\label{tab:parameters}
+\centering
+\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+Quantity & Assumed value\\
+\midrule
+Payload per record & 256 bytes\\
+Transmitted bits per payload byte & 10\\
+Link rate & 2.0 Mb/s\\
+Receiver time per record & 0.35 ms\\
+Fixed setup time per batch & 0.60 ms\\
+Interval between arrivals & 3.00 ms\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\SampleColumnBreak
+
+\subsection{Latency calculation}
+
+Let $S$ be the number of payload bytes in a record, $k$ the transmitted bits per payload byte, $R$ the bit rate in bits per second, and $C$ the receiver time in seconds per record. For a batch of $n$ records with fixed setup time $T_0$, the ready-request duration is
+
+\begin{equation}
+T_{\mathrm{ready}}(n)=T_0+n\left(\frac{Sk}{R}+C\right).
+\label{eq:latency}
+\end{equation}
+
+The average request time charged to each record is the ready-request duration divided by the batch size. This is a throughput-oriented measure. An individual record in the example receives its result when the batch completes, so its response time can be longer than the per-record average.
+
+\subsection{Collection delay}
+
+To illustrate externally arriving input, the model adds records exactly 3 ms apart. A full batch starts as soon as its last record arrives, assuming no preceding request is still active. At that rate all four batch sizes in the example satisfy the assumption. The first record waits for all later arrivals in its batch. The last record waits only for the ready-request duration.

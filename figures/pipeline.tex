@@ -1,0 +1,11 @@
+\begin{tikzpicture}[
+  box/.style={draw=black!70, fill=black!6, rounded corners=2pt, minimum width=20mm,
+    minimum height=9mm, align=center, font=\footnotesize},
+  flow/.style={-{Latex[length=2mm]}, thick}
+]
+\node[box] (host) at (0,0) {Host\\setup};
+\node[box] (link) at (2.7,0) {Serial\\link};
+\node[box] (rx) at (5.4,0) {Receiver\\process};
+\draw[flow] (host) -- (link);
+\draw[flow] (link) -- (rx);
+\end{tikzpicture}

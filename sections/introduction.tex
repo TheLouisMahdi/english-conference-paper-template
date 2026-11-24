@@ -1,0 +1,17 @@
+\section{Introduction}
+
+Batching reduces the number of times a host must set up a transfer. It can therefore reduce time per sample in a sensor pipeline even when the time to complete any one batch increases. The gap between these measurements matters for devices that produce samples at a fixed rate. The earliest sample may spend time waiting for the batch to fill before the host issues any request.
+
+This example studies a simple host, link, and receiver pipeline. The host sends fixed-size records through a serial link. The receiver processes each record and makes the results available when the whole batch finishes. The example varies batch size and holds record size, link rate, processing time, and fixed request overhead constant. A deterministic model provides values that can be checked without running hardware.
+
+\SampleColumnBreak
+
+\section{Related Work}
+
+Latency should be tied to a specified interval. Work on latency in large distributed systems has shown the value of characterizing slow responses as well as means \cite{dean2013}. The system considered here is a small deterministic pipeline. The cited work motivates reporting the measurement boundary clearly. It does not supply parameters or performance results for the example.
+
+A throughput estimate derived from ready batches can be useful for capacity planning. The same estimate gives limited information about when the first sample in a batch will become available. For that purpose, collection time is reported as a separate quantity. This separation is useful when changing the batching policy because request processing and queue waiting respond differently to that change.
+
+\subsection{Question and scope}
+
+The example asks how many records should be sent together when mean processing cost and time to first result both matter. The design comparison uses batches of one, two, four, and eight records. The numerical results describe a calculation under fixed assumptions. A hardware experiment would be needed to characterize an implementation or its timing distribution.

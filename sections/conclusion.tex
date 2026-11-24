@@ -1,0 +1,13 @@
+\section{Reproducibility and Limitations}
+
+All values in the timing table follow from the stated parameters. For a batch of four, the link and receiver cost per record is 1.630 ms, so the ready-request time is 0.60 + 4 times 1.630 = 7.120 ms. Dividing by four gives 1.780 ms per record. Adding the 9 ms collection delay of the first record gives 16.120 ms. A new design can be evaluated with the same equations after replacing the assumed inputs.
+
+A device experiment should state the clock and link rate, packet format, payload length, and timeout behavior. To evaluate collection delay, it should preserve timestamps at arrival, request dispatch, and result delivery. The timer used to compare software paths should have a documented resolution and should be consistent across modes. A test report should identify whether calibrated instrumentation or software timestamps were used.
+
+\SampleColumnBreak
+
+The analytical model omits packet retries, service overlap, operating-system scheduling, and variable sensor arrival. It assumes that each result is released with the rest of its batch. These assumptions keep the example easy to recalculate and limit its interpretation to the behavior of the model. They also indicate which terms to measure first when replacing the example with an actual implementation.
+
+\section{Conclusion}
+
+The example separates ready-request time, per-record cost, and the response time of a sample waiting for a batch. The calculation shows why an improvement in throughput per record can coexist with a longer time to the earliest result. Reporting these intervals separately makes the trade-off clear when selecting a batching policy. The numerical example can be replaced by measured results while retaining the same structure and units.

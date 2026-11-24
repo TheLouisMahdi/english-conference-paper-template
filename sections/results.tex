@@ -1,0 +1,44 @@
+\section{Results}
+
+\subsection{Ready batches}
+
+Table~\ref{tab:results} reports the modeled request duration and the average time charged to each record. Increasing batch size from one to eight lowers the per-record average from 2.230 ms to 1.705 ms because the fixed setup cost is spread across more records. The time per request grows from 2.230 ms to 13.640 ms because the link and receiver still serve every record.
+
+\begin{table}[!t]
+\caption{Analytical Latency by Batch Size}
+\label{tab:results}
+\centering
+\small
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+Records & Request (ms) & Per record (ms) & First result (ms)\\
+\midrule
+1 & 2.230 & 2.230 & 2.230\\
+2 & 3.860 & 1.930 & 6.860\\
+4 & 7.120 & 1.780 & 16.120\\
+8 & 13.640 & 1.705 & 34.640\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Samples arriving at fixed intervals}
+
+The first record waits an additional 3 ms for each later record in the batch. The earliest sample in a batch of eight therefore completes 34.640 ms after its arrival. For a batch of one, the same measure is 2.230 ms. The largest batch in the example offers the lowest modeled time per record and the longest time to the first result. A latency requirement can change the preferred batch size.
+
+For example, suppose the first result must be available within 12 ms of arrival. Batches of one and two meet this requirement under the assumed schedule. A batch of four takes 16.120 ms from first arrival to completion, so a batch of two gives the lower per-record cost among the eligible sizes. The same reasoning can be repeated for other deadlines.
+
+\SampleColumnBreak
+
+\section{Discussion}
+
+\subsection{Sensitivity to the link}
+
+A faster link reduces the serialization contribution without reducing the receiver computation. Doubling the assumed link rate saves 0.64 ms per record. This change does not remove collection delay because the input arrival spacing remains fixed. The saving in ready-request time can therefore be larger than the relative improvement for the first sample in a batch.
+
+\subsection{Sensitivity to setup time}
+
+The difference in average time per record across batch sizes depends on the fixed setup cost. Halving the setup cost from 0.60 ms to 0.30 ms reduces the incentive to send a large batch. If the setup contribution is small, batch size can be chosen mainly by the latency constraint or by buffer capacity. A hardware evaluation could vary setup behavior separately from record size to check this prediction.
+
+\subsection{Choosing what to report}
+
+The timing table separates camera or sensor acquisition, where applicable, from a transfer that starts with the required data already available. A physical study could report both boundaries. A repeatable experiment should retain sample identifiers, the device configuration, and the exact start and stop events so that a reader can compare the result with another implementation.
